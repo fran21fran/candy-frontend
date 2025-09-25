@@ -1,5 +1,5 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
-const RENDER_URL = import.meta.env.VITE_RENDER_URL;
+const RENDER_URL = import.meta.env.VITE_API_URL;
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
