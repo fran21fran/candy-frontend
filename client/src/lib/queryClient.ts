@@ -42,7 +42,7 @@ type UnauthorizedBehavior = "returnNull" | "throw";
   };*/
 export const getQueryFn = ({ on401 }: { on401?: "throw" | "returnNull" }) => {
   return async ({ queryKey }: { queryKey: string[] }) => {
-    const backendUrl = process.env.VITE_API_URL;
+    const backendUrl = import.meta.env.VITE_API_URL;
     if (!backendUrl) throw new Error("Backend URL not defined");
 
     const res = await fetch(`${backendUrl}${queryKey[0]}`, {
