@@ -24,7 +24,7 @@ export async function apiRequest(
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";
-export const getQueryFn: <T>(options: {
+/*export const getQueryFn: <T>(options: {
   on401: UnauthorizedBehavior;
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
@@ -39,7 +39,29 @@ export const getQueryFn: <T>(options: {
 
     await throwIfResNotOk(res);
     return await res.json();
+  };*/
+export function getQueryFn({ url, on401 }: { url: string; on401?: "returnNull" }) {
+  return async (): Promise<any> => {
+    const res = await fetch(url, {
+      method: "GET",
+      credentials: "include", // importante para enviar cookies de sesión
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (res.status === 401 && on401 === "returnNull") {
+      return null;
+    }
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Request failed with status ${res.status}: ${text}`);
+    }
+
+    return res.json();
   };
+}
 
 export const queryClient = new QueryClient({
   defaultOptions: {
