@@ -40,28 +40,25 @@ type UnauthorizedBehavior = "returnNull" | "throw";
     await throwIfResNotOk(res);
     return await res.json();
   };*/
-export function getQueryFn({ url, on401 }: { url: string; on401?: "returnNull" }) {
-  return async (): Promise<any> => {
-    const res = await fetch(url, {
-      method: "GET",
-      credentials: "include", // importante para enviar cookies de sesión
-      headers: {
-        "Content-Type": "application/json",
-      },
+export const getQueryFn = ({ on401 }: { on401?: "throw" | "returnNull" }) => {
+  return async ({ queryKey }: { queryKey: string[] }) => {
+    const backendUrl = process.env.VITE_API_URL;
+    if (!backendUrl) throw new Error("Backend URL not defined");
+
+    const res = await fetch(`${backendUrl}${queryKey[0]}`, {
+      credentials: "include",
     });
 
-    if (res.status === 401 && on401 === "returnNull") {
-      return null;
+    if (res.status === 401) {
+      if (on401 === "returnNull") return null;
+      throw new Error("Unauthorized");
     }
 
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`Request failed with status ${res.status}: ${text}`);
-    }
+    if (!res.ok) throw new Error("Network response not ok");
 
     return res.json();
   };
-}
+};
 
 export const queryClient = new QueryClient({
   defaultOptions: {
