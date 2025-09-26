@@ -10,10 +10,13 @@ export interface User {
 
 export function useAuth() {
   const { data: user, isLoading, error } = useQuery<User | null>({
-    queryKey: ["/api/user-info"],
-    queryFn: getQueryFn({ on401: "returnNull" }), // Return null for unauthenticated users
+    queryKey: ["user-info"],
+    queryFn: getQueryFn({ 
+      url: "https://candy-backend-j0d3.onrender.com/api/user-info", 
+      on401: "returnNull" 
+    }),
     retry: false,
-    staleTime: 0, // Always fresh for auth state
+    staleTime: 0,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
   });
