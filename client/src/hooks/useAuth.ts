@@ -9,14 +9,18 @@ export interface User {
 }
 
 export function useAuth() {
+  console.log("🔍 useAuth se está ejecutando");
+  
   const { data: user, isLoading, error } = useQuery<User | null>({
-    queryKey: ["/api/user-info"], // ← Solo el path, no la URL completa
-    queryFn: getQueryFn({ on401: "returnNull" }), // ← Sin parámetro url
+    queryKey: ["/api/user-info"],
+    queryFn: getQueryFn({ on401: "returnNull" }),
     retry: false,
     staleTime: 0,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
   });
+
+  console.log("🔍 useAuth state:", { user, isLoading, error });
 
   return {
     user,
