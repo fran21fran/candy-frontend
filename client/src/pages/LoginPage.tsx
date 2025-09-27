@@ -22,7 +22,7 @@ export default function LoginPage() {
     onSuccess: () => {
       // Invalidate auth cache to refresh user state
       queryClient.invalidateQueries({ queryKey: ["/api/user-info"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      //queryClient.invalidateQueries({ queryKey: ["/api/user"] });
       
       toast({
         title: "¡Bienvenido!",
